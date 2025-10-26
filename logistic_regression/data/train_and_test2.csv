@@ -1,4 +1,4 @@
-Passengerid,Age,Fare,Sex,sibsp,zero,zero,zero,zero,zero,zero,zero,Parch,zero,zero,zero,zero,zero,zero,zero,zero,Pclass,zero,zero,Embarked,zero,zero,2urvived
+Passengerid,Age,Fare,Sex,sibsp,zero,zero,zero,zero,zero,zero,zero,Parch,zero,zero,zero,zero,zero,zero,zero,zero,Pclass,zero,zero,Embarked,zero,zero,Survived
 1,22,7.25,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,2,0,0,0
 2,38,71.2833,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1
 3,26,7.925,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,2,0,0,1
