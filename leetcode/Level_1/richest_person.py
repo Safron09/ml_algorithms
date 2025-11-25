@@ -1,3 +1,4 @@
+accounts = [[1,2,3],[3,2,1]]
 class Solution:
     def maximumWealth(self, accounts: List[List[int]]) -> int:
         max_wealth = 0
