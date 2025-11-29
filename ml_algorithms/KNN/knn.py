@@ -12,7 +12,6 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix
 )
-csv_path = "ml_algorithms\KNN\dataset\KNNAlgorithmDataset.csv"
 def load_data(csv_path: str) -> pd.DataFrame:
     df = pd.read_csv(csv_path)
     return df
@@ -92,3 +91,25 @@ def predict_new_patient(model, feature_names, values):
 
     return diagnosis_str, prob_malignant
 
+def main():
+    csv_path = "ml_algorithms\KNN\dataset\KNNAlgorithmDataset.csv"
+    df = load_data(csv_path)
+    print("Data loaded. Shape:", df.shape)
+
+    X, y = preprocessing_dataframe(df)
+    print("Featur shape:", X.shape, "| Labels Shape", y.shape)
+
+    feature_names = list(X.columns)
+
+    X_train, X_test, y_train, y_test = split_data(X, y, test_size=0.2)
+    print("Train size:", X_train.shape[0], "| Test Size:", X_test.shape[0])
+
+    best_model = build_and_tune_knn(X_train, y_train)
+
+    evaluate_model(best_model, X_test, y_test)
+
+    example_values = X_test.iloc[0].values
+    predict_new_patient(best_model, feature_names, example_values)
+
+if __name__ == "__main__":
+    main()
