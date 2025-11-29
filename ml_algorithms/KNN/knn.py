@@ -39,4 +39,29 @@ def split_data(X,y,test_size=0.2, random_state=42):
     return X_train, X_test, y_train, y_test
 
 def build_and_tune_knn(X_train, y_train):
-    
+    # StandardScaler solves this by normalizing each feature to: z = (x - mean) / std
+    pipe = Pipeline(steps=[
+        ('scaler', StandardScaler()),
+        ('knn', KNeighborsClassifier())
+    ])
+    param_grid = {
+        'knn_n_neigbors':[3,5,7,9,11,15],
+        'knn_weights':['uniform', 'distance'],
+        'knn_metrics':['euclidean', 'manhattan']
+    }
+    grid_search = GridSearchCV(
+        estimator=pipe,
+        param_grid=param_grid,
+        cv=5, # 5-fold cross-validation
+        scoring='f1',
+        n_jobs=1,
+        verbose=1
+    )
+    grid_search.fit(X_train, y_train)
+
+    print("Best parameter:")
+    print(grid_search.best_params_)
+    print(f"Best Cross-validation F1 score: {grid_search.best_score_:.4f}\n")
+
+    best_model = grid_search.best_estimator_
+    return best_model
