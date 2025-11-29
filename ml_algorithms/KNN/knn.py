@@ -65,3 +65,16 @@ def build_and_tune_knn(X_train, y_train):
 
     best_model = grid_search.best_estimator_
     return best_model
+
+def evaluate_model(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    print(f"Test Accuracy: {acc: .4f}")
+    print("\nClassification Report(0=benign, 1=malignant):")
+    print(classification_report(y_test, y_pred, digits=4))
+
+    cm = confusion_matrix(y_test, y_pred)
+    print("Confusion Matrix:")
+    print(cm)
+
+    
