@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -38,27 +39,30 @@ def split_data(X,y,test_size=0.2, random_state=42):
     return X_train, X_test, y_train, y_test
 
 def build_and_tune_knn(X_train, y_train):
-    # StandardScaler solves this by normalizing each feature to: z = (x - mean) / std
     pipe = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median'))
         ('scaler', StandardScaler()),
         ('knn', KNeighborsClassifier())
     ])
+
     param_grid = {
-        'knn_n_neigbors':[3,5,7,9,11,15],
-        'knn_weights':['uniform', 'distance'],
-        'knn_metrics':['euclidean', 'manhattan']
+        'knn__n_neighbors': [3, 5, 7, 9, 11, 15],
+        'knn__weights': ['uniform', 'distance'],
+        'knn__metric': ['euclidean', 'manhattan']
     }
+
     grid_search = GridSearchCV(
         estimator=pipe,
         param_grid=param_grid,
-        cv=5, # 5-fold cross-validation
+        cv=5,
         scoring='f1',
-        n_jobs=1,
+        n_jobs=-1,
         verbose=1
     )
+
     grid_search.fit(X_train, y_train)
 
-    print("Best parameter:")
+    print("Best parameters:")
     print(grid_search.best_params_)
     print(f"Best Cross-validation F1 score: {grid_search.best_score_:.4f}\n")
 
@@ -81,7 +85,7 @@ def predict_new_patient(model, feature_names, values):
     proba = model.predict_proba(X_new)[0]
     pred_label = model.predict(X_new)[0]
 
-    diagnosis_map = (0: "Bengin", 1: "Malignant")
+    diagnosis_map = {0: "Bengin", 1: "Malignant"}
     diagnosis_str = diagnosis_map[pred_label]
     prob_malignant = proba[1]
 
@@ -92,7 +96,7 @@ def predict_new_patient(model, feature_names, values):
     return diagnosis_str, prob_malignant
 
 def main():
-    csv_path = "ml_algorithms\KNN\dataset\KNNAlgorithmDataset.csv"
+    csv_path = "dataset/KNNAlgorithmDataset.csv"
     df = load_data(csv_path)
     print("Data loaded. Shape:", df.shape)
 
