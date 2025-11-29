@@ -98,6 +98,45 @@ def predict_new_patient(model, feature_names, values):
 
     return diagnosis_str, prob_malignant
 
+def plot_before_and_after_scaling(model, X_train, y_train):
+    f1 = 'radius_mean'
+    f2 = 'texture_mean'
+# Before Scaling
+    plt.figure(figsize=(8, 6))
+    plt.scatter(
+        X_train[f1], X_train[f2],
+        c=y_train,
+        cmap="coolwarm",
+        alpha=0.8
+    )
+    plt.title("Before Scaling")
+    plt.xlabel(f1)
+    plt.ylabel(f2)
+    plt.colorbar(label="Diagnosis (0=Benign, 1=Malignant)")
+    plt.grid(True)
+    plt.savefig("before_scaling.png", dpi=200)
+    plt.show()
+
+# After scaling
+    scaled = model['scaler'].transform(X_train)
+    scaled_df = pd.DataFrame(scaled, columns=X_train.columns)
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(
+        scaled_df[f1], scaled_df[f2],
+        c=y_train,
+        cmap="coolwarm",
+        alpha=0.8
+    )
+    plt.title("After Scaling (StandardScaler Applied)")
+    plt.xlabel(f1)
+    plt.ylabel(f2)
+    plt.colorbar(label="Diagnosis (0=Benign, 1=Malignant)")
+    plt.grid(True)
+    plt.savefig("after_scaling.png", dpi=200)
+    plt.show()
+
+
 def main():
     csv_path = "dataset/KNNAlgorithmDataset.csv"
     df = load_data(csv_path)
@@ -117,43 +156,8 @@ def main():
 
     example_values = X_test.iloc[0].values
     predict_new_patient(best_model, feature_names, example_values)
+    plot_before_and_after_scaling(best_model, X_train, y_train)
 
-    def plot_before_and_after_scaling(model, X_train, y_train):
-        f1 = 'radius mean'
-        f2 = 'texture mean'
-
-        plt.figure(figsize=(8, 6))
-        plt.scatter(
-            X_train[f1], X_train[f2],
-            c=y_train,
-            cmap="coolwarm",
-            alpha=0.8
-        )
-        plt.title("Before scaling")
-        plt.xlabel(f1)
-        plt.ylabel(f2)
-        plt.colorbar(label="Diagnosis (0=Bengin, 1=Malignant)")
-        plt.grid(True)
-        plt.savefig("before_scaling.png", dpi=200)
-        plt.show()
-
-        scaled = model['scaler'].transform(X_train)
-        scaled_df = pd.DataFrame(scaled, columns=X_train.columns)
-
-        plt.figure(figsize=(8, 6))
-        plt.scatter(
-            scaled_df[f1], scaled_df[f2],
-            c=y_train,
-            cmap="coolwarm",
-            alpha=0.8
-        )
-        plt.title("After Scaling (StandardScaler Applied)")
-        plt.xlabel(f1)
-        plt.ylabel(f2)
-        plt.colorbar(label="Diagnosis (0=Benign, 1=Malignant)")
-        plt.grid(True)
-        plt.savefig("after_scaling.png", dpi=200)
-        plt.show()
-
+ 
 if __name__ == "__main__":
     main()
