@@ -1,0 +1,31 @@
+Ppredicting tumor diagnosis from new patient measurements
+
+Goal:
+Given measurements of a breast mass (radius, texture, perimeter, etc.), predict whether the tumor is:
+M – malignant (cancer)
+B – benign (not cancer)
+
+This is a binary classification problem using the Breast Cancer Wisconsin Diagnostic dataset.
+
+In a medical setting, they would clarify:
+-Primary objective: Catch malignant tumors.
+-Metric priority: High recall/sensitivity for malignants, while keeping precision acceptable (minimize false alarms but never miss too many real cancers)
+
+KNN is a non-parametric, instance-based machine learning algorithm used for:
+-Classification
+-Regression
+-Imputation (filling missing values)
+-Recommendation
+KNN does not learn a model.
+
+Instead, it memorizes the training data and answers queries by looking at the closest neighbors.
+
+How KNN Works 
+Given a new data point:
+-Compute the distance (Euclidean, Manhattan, etc.) to all training points
+-Pick the K closest points
+-For classification:
+    *Majority vote among neighbors
+-For regression:
+    *Average the neighbor values
+    
