@@ -77,4 +77,18 @@ def evaluate_model(model, X_test, y_test):
     print("Confusion Matrix:")
     print(cm)
 
-    
+def predict_new_patient(model, feature_names, values):
+    X_new = pd.DataFrame([values], columns=feature_names)
+    proba = model.predict_proba(X_new)[0]
+    pred_label = model.predict(X_new)[0]
+
+    diagnosis_map = (0: "Bengin", 1: "Malignant")
+    diagnosis_str = diagnosis_map[pred_label]
+    prob_malignant = proba[1]
+
+    print("Prediction for new patient:")
+    print(f"  Diagnosis: {diagnosis_str}")
+    print(f"  P(malignant): {prob_malignant:.4f}")
+
+    return diagnosis_str, prob_malignant
+
