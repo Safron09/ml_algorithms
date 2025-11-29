@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
@@ -20,6 +21,8 @@ def load_data(csv_path: str) -> pd.DataFrame:
 def preprocessing_dataframe(df: pd.DataFrame):
     if 'id' in df.columns:
         df = df.drop(columns=['id'])
+
+    df = df.dropna(axis=1, how='all')  # Dropping Nan columns
 
     df['label']=df['diagnosis'].map({'M':1, 'B':0})
     assert df['label'].isna().sum()==0, "Unexpected Values in diagnosis column"
@@ -40,7 +43,7 @@ def split_data(X,y,test_size=0.2, random_state=42):
 
 def build_and_tune_knn(X_train, y_train):
     pipe = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='median'))
+        ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler()),
         ('knn', KNeighborsClassifier())
     ])
@@ -114,6 +117,43 @@ def main():
 
     example_values = X_test.iloc[0].values
     predict_new_patient(best_model, feature_names, example_values)
+
+    def plot_before_and_after_scaling(model, X_train, y_train):
+        f1 = 'radius mean'
+        f2 = 'texture mean'
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(
+            X_train[f1], X_train[f2],
+            c=y_train,
+            cmap="coolwarm",
+            alpha=0.8
+        )
+        plt.title("Before scaling")
+        plt.xlabel(f1)
+        plt.ylabel(f2)
+        plt.colorbar(label="Diagnosis (0=Bengin, 1=Malignant)")
+        plt.grid(True)
+        plt.savefig("before_scaling.png", dpi=200)
+        plt.show()
+
+        scaled = model['scaler'].transform(X_train)
+        scaled_df = pd.DataFrame(scaled, columns=X_train.columns)
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(
+            scaled_df[f1], scaled_df[f2],
+            c=y_train,
+            cmap="coolwarm",
+            alpha=0.8
+        )
+        plt.title("After Scaling (StandardScaler Applied)")
+        plt.xlabel(f1)
+        plt.ylabel(f2)
+        plt.colorbar(label="Diagnosis (0=Benign, 1=Malignant)")
+        plt.grid(True)
+        plt.savefig("after_scaling.png", dpi=200)
+        plt.show()
 
 if __name__ == "__main__":
     main()
